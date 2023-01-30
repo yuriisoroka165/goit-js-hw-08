@@ -50,8 +50,7 @@ function onFormSubmit(event) {
     data.email = '';
     data.message = '';
     storeDataToLocalStorage(data);
-    formInput.value = data.email;
-    formTextArea.value = data.message;
+    event.curentTArget.reset();
 }
 
 // функція при зміні input
