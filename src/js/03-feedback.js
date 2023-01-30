@@ -1,66 +1,51 @@
 import throttle from "lodash.throttle";
 
-const feedbackForm = document.querySelector('.feedback-form');
-const formInput = document.querySelector('.feedback-form input');
-const formTextArea = document.querySelector('.feedback-form textarea');
+const STORAGE_KEY = 'feedback-form-state';
 
-// початковий об'єкт
-const data = {
-    email: '',
-    message: '',
+const refs = {
+    feedbackForm: document.querySelector('.feedback-form'),
+    feedbackFormInput: document.querySelector('.feedback-form input'),
+    feedbackFormTextArea: document.querySelector('.feedback-form textarea'),
 }
 
-// ця змінна зберігає завантажені дані з локального сховища
-const dataFromLocalStorage = getDataFromLocalStorage();
+const formData = {};
 
-// перевірка наявності даних та парсинг даних в новий об'єкт
-if (dataFromLocalStorage) {
-    try {
-        const loadedData = JSON.parse(dataFromLocalStorage);
-        data.email = loadedData["email"];
-        data.message = loadedData["message"];
-    } catch (error) {
-        console.log(`Error: ${error.name}\n Error detail: ${error.message}`);
-    }
-}
+getDataFromLocalStorage();
 
-// вставка даних у відповідні поля
-formInput.value = data.email;
-formTextArea.value = data.message;
-
-feedbackForm.addEventListener("submit", onFormSubmit);
-formInput.addEventListener('input', throttle(onInputChange, 500));
-formTextArea.addEventListener('input', throttle(onTextAreaChange, 500));
+refs.feedbackForm.addEventListener('submit', onFormSubmit);
+refs.feedbackForm.addEventListener('input', throttle((event) => {
+        formData[event.target.name] = event.target.value;
+        storeDataToLocalStorage(formData);
+    }, 500)
+);
 
 // функція відправки форми
 function onFormSubmit(event) {
     event.preventDefault();
-    console.log(data);
-    data.email = '';
-    data.message = '';
-    storeDataToLocalStorage(data);
+    console.log(formData);
+    localStorage.removeItem(STORAGE_KEY);
     event.target.reset();
-}
-
-// функція при зміні input
-function onInputChange(event) {
-    data.email = event.target.value; 
-    storeDataToLocalStorage(data);
-}
-
-// функція при зміні textarea
-function onTextAreaChange(event) {
-    data.message = event.target.value;
-    storeDataToLocalStorage(data);
 }
 
 // функція для зберігання даних в локальне сховище
 function storeDataToLocalStorage(data) {
     const dataForLocalStorage = JSON.stringify(data);
-    localStorage.setItem('feedback-form-state', dataForLocalStorage);
+    localStorage.setItem(STORAGE_KEY, dataForLocalStorage);
 }
 
-// функція поаертає дані з локального сховища
+// функція повертає дані з локального сховища
 function getDataFromLocalStorage() {
-    return localStorage.getItem('feedback-form-state');
+    const storedData =  localStorage.getItem(STORAGE_KEY);
+
+    if (storedData) {
+        try {
+            const tempObject = JSON.parse(storedData);
+            formData[refs.feedbackFormInput.name] = tempObject[refs.feedbackFormInput.name];
+            formData[refs.feedbackFormTextArea.name] = tempObject[refs.feedbackFormTextArea.name];
+            refs.feedbackFormInput.value = tempObject[refs.feedbackFormInput.name];
+            refs.feedbackFormTextArea.value = tempObject[refs.feedbackFormTextArea.name];
+        } catch(error) {
+            console.log(`Error: ${error.name}\n Error detail: ${error.message}`);
+        }
+    }
 }
