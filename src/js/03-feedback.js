@@ -34,14 +34,8 @@ formInput.value = data.email;
 formTextArea.value = data.message;
 
 feedbackForm.addEventListener("submit", onFormSubmit);
-formInput.addEventListener('input', throttle((event) => {
-        onInputChange(event)
-    }, 500)
-);
-formTextArea.addEventListener('input', throttle((event) => {
-        onTextAreaChange(event)
-    }, 500)
-);
+formInput.addEventListener('input', throttle(onInputChange, 500));
+formTextArea.addEventListener('input', throttle(onTextAreaChange, 500));
 
 // функція відправки форми
 function onFormSubmit(event) {
@@ -50,7 +44,7 @@ function onFormSubmit(event) {
     data.email = '';
     data.message = '';
     storeDataToLocalStorage(data);
-    event.curentTArget.reset();
+    event.target.reset();
 }
 
 // функція при зміні input
