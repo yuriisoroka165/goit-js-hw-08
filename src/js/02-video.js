@@ -17,10 +17,7 @@ if (lastCurrentTime === undefined) {
 videoPlayer.setCurrentTime(lastCurrentTime);
 
 // відстежування події timeupdate та виклик функції отримання часової мітки, кожної секунди
-videoPlayer.on('timeupdate', throttle(() => {
-    getCurrentTimeStamp();
-    }, 1000)
-);
+videoPlayer.on('timeupdate', throttle(getCurrentTimeStamp, 1000));
 
 // функція отримує часову мітку від відео плеєра та викликає функію запису в локальне сховище
 function getCurrentTimeStamp() {
