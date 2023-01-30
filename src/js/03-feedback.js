@@ -3,7 +3,7 @@
 // Я НЕ ЗНАЙШОВ ЯК ПРАВИЛЬНО ВІДСТУЖУВАТИ INPUT ДЛЯ ВСІЄЇ ФОРМИ І ОТРИМУВАТИ ДАНІ З КОНКРЕТНОГО ПОЛЯ ЯКЕ ЗМІНЮЄТЬСЯ В МОМЕНТ ЧАСУ
 // ТОМУ Я СЛУХАЮ КОЖНЕ ПОЛЕ ОКРЕМО
 
-const throttle = require('lodash.throttle');
+import throttle from "lodash.throttle";
 
 const feedbackForm = document.querySelector('.feedback-form');
 const formInput = document.querySelector('.feedback-form input');
